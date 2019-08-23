@@ -1,6 +1,4 @@
-
     require('dotenv').config()
-
 
 
 const express = require("express")
@@ -11,7 +9,7 @@ const route = require('./routes')
 const mongoose = require('mongoose')
 const errorHandler = require('./middlewares/errorHandler')
 
-mongoose.connect(`mongodb+srv://anameilani:ana1106131176@cluster0-ogdd6.gcp.mongodb.net/eva-financial-planning?retryWrites=true&w=majority`, {useNewUrlParser: true}, function(err){
+mongoose.connect(`mongodb://localhost/eva`, {useNewUrlParser: true}, function(err){
     if(err) throw err
     else console.log('success connect to database')
 });
@@ -28,3 +26,6 @@ app.listen(port, ()=>{
 })
 
 module.exports = app
+
+
+//mongodb+srv://anameilani:ana1106131176@cluster0-ogdd6.gcp.mongodb.net/eva-financial-planning?retryWrites=true&w=majority

@@ -1,10 +1,12 @@
 let objectModel = {
-    user: require("../models/user")
+    user: require("../models/user"),
+    planning: require('../models/planning'),
+    outcome: require('../models/outcome')
 }
 module.exports = function (modelName, done) {
 
     if (process.env.NODE_ENV === 'test') {
-        console.log('masuk delete testing');
+       
 
         objectModel[modelName].deleteMany()
             .then(() => {
@@ -12,7 +14,7 @@ module.exports = function (modelName, done) {
                 done()
             })
             .catch(function (err) {
-                console.log(err);
+                console.log(err)
             });
 
     }
