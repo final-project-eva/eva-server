@@ -27,6 +27,12 @@ let planningSchema= new Schema({
             ref: 'Outcome'
         }
     }],
+    outcomeOverBudget:[{
+        outcomeId: { 
+            type: Schema.Types.ObjectId,
+             ref: 'Outcome'
+         }
+    }],
     balance: {
         type: Number
     },

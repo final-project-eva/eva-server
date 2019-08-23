@@ -4,7 +4,6 @@ const Planning= require('../models/planning')
 class outcomeController{
 
     static async create(req,res,next){
-
         try {
             let outcome={
                 planningId: req.body.planningId,
@@ -14,15 +13,34 @@ class outcomeController{
                 amount: req.body.amount
             }
             let plans= await Planning.findById(req.body.planningId)
-    
+            
             if(plans){
-    
-                let newOutcome= await Outcome.create(outcome)
-                plans.outcome.push(newOutcome)
                 
-                let newPlans= await plans.save()
-    
-                res.status(201).json(newPlans)
+                let newOutcome= await Outcome.create(outcome)
+                let budget= plans.budgets.filter(item => {
+                            return item.category.toLowerCase().includes(req.body.category.toLowerCase())
+                            })
+                let indexBudget= plans.budgets.indexOf(budget[0])
+            
+                plans.outcome.push(newOutcome)
+                let newBalance= plans.balance - Number(req.body.amount)
+                let currentBudget= budget[0].amount - Number(req.body.amount)
+
+                if(currentBudget > 0){
+                    budget[0].amount= currentBudget
+                }else{
+                    plans.overBudget=  Number(req.body.amount) - budget[0].amount
+                    budget[0].amount= 0
+                    plans.outcomeOverBudget.push(newOutcome)
+                }
+
+                plans.balance= newBalance
+                plans.budgets.splice(indexBudget, 1)
+                plans.budgets.push(budget[0])
+                
+                plans.save()
+                
+                res.status(201).json(plans)
     
             }else{
                 throw { code: 404, message: 'Plan Not Found!'}
