@@ -28,13 +28,15 @@ class outcomeController{
 
                 if(currentBudget > 0){
                     budget[0].amount= currentBudget
+                    plans.balance= newBalance
                 }else{
                     plans.overBudget=  Number(req.body.amount) - budget[0].amount
                     budget[0].amount= 0
                     plans.outcomeOverBudget.push(newOutcome)
+                    plans.balance= newBalance
                 }
 
-                plans.balance= newBalance
+                // plans.balance= newBalance
                 plans.budgets.splice(indexBudget, 1)
                 plans.budgets.push(budget[0])
                 
@@ -53,9 +55,10 @@ class outcomeController{
     }
 
     static findOne(req, res, next){
-
+       console.log(req.params.id, '=================')
         Outcome.findById(req.params.id)
         .then(outcome => {
+           
             res.status(200).json(outcome)
         })
         .catch(next)

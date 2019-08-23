@@ -62,12 +62,14 @@ class UserController {
                 return User.findByIdAndUpdate(req.decoded.id, 
                         {firstname: firstname, lastname: lastname, phone_number: phone_number }, { runValidators: true, new: true })
             }else{
+                
                 return User.findByIdAndUpdate(req.decoded.id, 
                     { ...req.body }, { runValidators: true, new: true })
             }
         })
         .then((data) => {
             res.status(200).json(data)
+            
         })
         .catch(next)
 
