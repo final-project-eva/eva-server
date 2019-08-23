@@ -10,6 +10,7 @@ class planningController{
             income: req.body.income,
             budgets:req.body.budgets,
             outcome: [],
+            outcomeOverBudget: [],
             balance: req.body.income,
             overBudgets: 0
         }
@@ -42,7 +43,7 @@ class planningController{
     }
 
     static update(req, res, next){
-
+        
         Planning.findByIdAndUpdate(req.params.id, {...req.body},{new: true})
         .then(plan =>{
             res.status(200).json(plan)

@@ -19,7 +19,7 @@ let outcomeSchema= new Schema({
         type: Number
     }
 
-})
+},{ timestamps: true })
 
 let Outcome= new mongoose.model('Outcome', outcomeSchema)
 

@@ -2,7 +2,7 @@ const Planning = require('../models/planning')
 const User = require('../models/user')
 
 function authorization(req, res, next) {
-    Planning.findById(req.params.articleid)
+    Planning.findById(req.params.id)
         .then((data) => {
             if (data.userId == req.decoded.id) {
                 next()
