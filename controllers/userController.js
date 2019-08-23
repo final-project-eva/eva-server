@@ -32,7 +32,10 @@ class UserController {
                             id: user._id,
                             email: user.email
                         }
-                        res.json({ token: jwt.sign(obj) })
+                        res.json({ 
+                            userId: user._id,
+                            token: jwt.sign(obj)
+                         })
 
                     } else {
                         res.status(400).json({
@@ -49,14 +52,25 @@ class UserController {
     }
 
     static updateProfile(req,res,next){
-        const {firstname, lastname, email, phone_number, password } = req.body
-        User.findByIdAndUpdate(req.decoded.id, 
-            {firstname, lastname, email, phone_number, password }, { runValidators: true, new: true })
-            .then((data) => {
-                res.status(200).json(data)
-            })
-            .catch(next)
        
+        User.findById(req.decoded.id)
+        .then(user => {
+
+            if(user.email === req.body.email){
+                const { firstname, lastname, phone_number }= req.body
+
+                return User.findByIdAndUpdate(req.decoded.id, 
+                        {firstname: firstname, lastname: lastname, phone_number: phone_number }, { runValidators: true, new: true })
+            }else{
+                return User.findByIdAndUpdate(req.decoded.id, 
+                    { ...req.body }, { runValidators: true, new: true })
+            }
+        })
+        .then((data) => {
+            res.status(200).json(data)
+        })
+        .catch(next)
+
     }
 
     static fetchUser(req,res,next){
