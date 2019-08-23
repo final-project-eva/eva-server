@@ -22,17 +22,9 @@ let planningSchema= new Schema({
         }
     }],
     outcome: [{
-        category: {
-            type: String
-        },
-        date: {
-            type: Date
-        },
-        note: {
-            type: String
-        },
-        amount: {
-            type: String
+       outcomeId: { 
+           type: Schema.Types.ObjectId,
+            ref: 'Outcome'
         }
     }],
     balance: {
