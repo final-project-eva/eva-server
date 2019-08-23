@@ -52,7 +52,7 @@ class UserController {
     }
 
     static updateProfile(req,res,next){
-
+       
         User.findById(req.decoded.id)
         .then(user => {
 
@@ -70,7 +70,7 @@ class UserController {
             res.status(200).json(data)
         })
         .catch(next)
-       
+
     }
 
     static fetchUser(req,res,next){
