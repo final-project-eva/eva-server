@@ -49,6 +49,7 @@ class UserController {
     }
 
     static updateProfile(req,res,next){
+        const {firstname, lastname, email, phone_number, password } = req.body
         User.findByIdAndUpdate(req.decoded.id, 
             {firstname, lastname, email, phone_number, password }, { runValidators: true, new: true })
             .then((data) => {

@@ -1,26 +1,28 @@
 module.exports = function (err, req, res, next) {
-    if (err.code === 404) {
-        res.status(404).json({
-            message: "Not Found"
-        })
-    } else if (err.name === 'ValidationError') {
-        let listError = []
-        for (let error in err.errors) {
-            listError.push({
-                message: err.errors[error].message,
-                path: err.errors[error].path
-            })
-        }
+    console.log(err);
+
+    if(err.name == 'ValidationError'){
         res.status(400).json({
-            listError
+            message: err.message
         })
-    } else if (err.code === 500) {
-        res.status(500).json({
-            message: 'Internal Server Error'
+    }else if(err.name == 'JsonWebTokenError'){
+        res.status(401).json({
+            message: 'Sorry you are not authorized'
         })
-    } else {
+    }
+    else if( err.name === 'TokenExpiredError'){
+        res.status(401).json({
+            message: "Token Expired"
+        })
+    }
+    else if(err.code){
         res.status(err.code).json({
             message: err.message
+        })
+    }
+    else {
+        res.status(500).json({
+            message: err
         })
     }
 }
