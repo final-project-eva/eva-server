@@ -13,9 +13,9 @@ const expect = chai.expect
 let planningId= null
 let outcomeId= null
 
-// after(function(done){
-//     deleteAllUser('outcome',done)
-// })
+after(function(done){
+    deleteAllUser('outcome',done)
+})
 
 before(function async (done){
     let dataUser= {
@@ -126,6 +126,32 @@ describe('Outcome test', () => {
         })
     })
 
+    describe('Post Outcome when ID Planning is not found', () => {
+        it('should send object with status code 404', (done) => {
+            
+            let data= {
+                planningId: 'ajk1234',
+                category: 'transportation',
+                date: new Date(),
+                note: 'beli motor',
+                amount: 3500
+            }
+
+            chai.request(app).post('/outcome')
+            .send(data)
+            .then((res) => {
+                
+                expect(res).to.have.status(404)
+                expect(res.body).to.be.an('object')
+                done()
+            })
+            .catch(function(err){
+                console.log(err)  
+            })
+
+        })
+    })
+
     describe('Find one outcome', () => {
         it('should send object with status code 200', (done) => {
             
@@ -139,6 +165,34 @@ describe('Outcome test', () => {
             .catch(function(err){
                 console.log(err)  
             })
+        })
+    })
+
+    describe('Update outcome', () => {
+        it('should send object with status code 200', (done) => {
+            let data={
+                note: 'beli mobil'
+            }
+
+            chai.request(app).patch(`/outcome/${outcomeId}`)
+            .send(data)
+            .then((res) => {
+
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.an('object')
+                expect(res.body).to.have.property('planningId')
+                expect(res.body).to.have.property('category')
+                expect(res.body).to.have.property('date')
+                expect(res.body).to.have.property('note')
+                expect(res.body).to.have.property('amount')
+                expect(res.body).to.have.property('createdAt')
+                expect(res.body).to.have.property('updatedAt')
+                done()
+            })
+            .catch(function(err){
+                console.log(err)  
+            })
+
         })
     })
 
