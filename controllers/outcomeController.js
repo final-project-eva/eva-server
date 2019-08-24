@@ -13,8 +13,8 @@ class outcomeController{
                 amount: req.body.amount
             }
             let plans= await Planning.findById(req.body.planningId)
-            
-            if(plans){
+                
+            if(Object.keys(plans).length !== 0 ){
                 
                 let newOutcome= await Outcome.create(outcome)
                 let budget= plans.budgets.filter(item => {
@@ -43,19 +43,16 @@ class outcomeController{
                 plans.save()
                 
                 res.status(201).json(plans)
-    
-            }else{
-                throw { code: 404, message: 'Plan Not Found!'}
             }
 
         } catch (error) {
-            next()
+           next()
         }
 
     }
 
     static findOne(req, res, next){
-       console.log(req.params.id, '=================')
+       
         Outcome.findById(req.params.id)
         .then(outcome => {
            
