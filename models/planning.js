@@ -22,16 +22,12 @@ let planningSchema= new Schema({
         }
     }],
     outcome: [{
-       outcomeId: { 
-           type: Schema.Types.ObjectId,
-            ref: 'Outcome'
-        }
+        type: Schema.Types.ObjectId,
+        ref: 'Outcome'
     }],
     outcomeOverBudget:[{
-        outcomeId: { 
-            type: Schema.Types.ObjectId,
-             ref: 'Outcome'
-         }
+        type: Schema.Types.ObjectId,
+        ref: 'Outcome'
     }],
     balance: {
         type: Number

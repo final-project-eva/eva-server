@@ -7,6 +7,7 @@ class planningController{
 
         let newPlanning= {
             userId: req.body.userId,
+            username: req.body.username,
             income: req.body.income,
             budgets:req.body.budgets,
             outcome: [],

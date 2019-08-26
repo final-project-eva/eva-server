@@ -12,6 +12,27 @@ const userSchema = new Schema({
         type: String,
         required: [true, `lastname is required`]
     },
+    username: {
+        type: String,
+        required: [true, 'username is required'],
+        validate: [{
+            validator: function (value) {
+                return User.find({
+                    _id: { $ne: this._id },
+                    username: value
+                })
+                    .then(data => {
+                        if (data.length !== 0) {
+                            throw new Error('Username has been used')
+                        }
+                    })
+                    .catch(err => {
+                        throw err
+                    });
+            },
+            message: props => `This username ${props.value} already used!`
+        }]
+    },
     email:{
         type:String,
         validate: [{
