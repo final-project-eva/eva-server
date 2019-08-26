@@ -33,9 +33,7 @@ const userSchema = new Schema({
                     .catch(err => {
                         throw err
                     });
-            },
-            message: props => `This email ${props.value} already used!`
-
+            }
         }], 
         required: [true, `email is required`] 
     },

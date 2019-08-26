@@ -22,33 +22,31 @@ class UserController {
     static login(req, res, next) {
         console.log(req.body);
 
-        User.findOne({ email: req.body.email }, function (err, user) {
-            if (err) {
-                throw err
-            } else {
-                if (user) {
-                    if (bcrypt.compareSync(req.body.password, user.password)) {
-                        let obj = {
-                            id: user._id,
-                            email: user.email
-                        }
-                        res.json({ 
-                            userId: user._id,
-                            token: jwt.sign(obj)
-                         })
-
-                    } else {
-                        res.status(400).json({
-                            message: "wrong password"
-                        })
+        User.findOne({ email: req.body.email })
+        .then(user => {
+            if (user) {
+                if (bcrypt.compareSync(req.body.password, user.password)) {
+                    let obj = {
+                        id: user._id,
+                        email: user.email
                     }
+                    res.json({ 
+                        userId: user._id,
+                        token: jwt.sign(obj)
+                     })
+
                 } else {
                     res.status(400).json({
-                        message: "username wrong"
+                        message: "wrong password"
                     })
                 }
+            } else {
+                res.status(400).json({
+                    message: "username wrong"
+                })
             }
         })
+         .catch(next)
     }
 
     static updateProfile(req,res,next){
