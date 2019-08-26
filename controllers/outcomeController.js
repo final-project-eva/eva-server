@@ -4,6 +4,7 @@ const Planning= require('../models/planning')
 class outcomeController{
 
     static async create(req,res,next){
+        
         try {
             let outcome={
                 planningId: req.body.planningId,
@@ -14,25 +15,29 @@ class outcomeController{
             }
             let plans= await Planning.findById(req.body.planningId)
                 
+                
             if(Object.keys(plans).length !== 0 ){
                 
                 let newOutcome= await Outcome.create(outcome)
+                console.log(newOutcome,'newco');
+                
                 let budget= plans.budgets.filter(item => {
                             return item.category.toLowerCase().includes(req.body.category.toLowerCase())
                             })
                 let indexBudget= plans.budgets.indexOf(budget[0])
-            
-                plans.outcome.push(newOutcome)
-                let newBalance= plans.balance - Number(req.body.amount)
-                let currentBudget= budget[0].amount - Number(req.body.amount)
+                console.log(newOutcome)
+                plans.outcome.push(newOutcome._id)
+                let newBalance= Number(plans.balance) - Number(req.body.amount)
+                let currentBudget= Number(budget[0].amount) - Number(req.body.amount)
 
                 if(currentBudget > 0){
+                    
                     budget[0].amount= currentBudget
                     plans.balance= newBalance
                 }else{
-                    plans.overBudget=  Number(req.body.amount) - budget[0].amount
+                    plans.overBudget=  Number(req.body.amount) - Number(budget[0].amount)
                     budget[0].amount= 0
-                    plans.outcomeOverBudget.push(newOutcome)
+                    plans.outcomeOverBudget.push(newOutcome._id)
                     plans.balance= newBalance
                 }
 
@@ -41,7 +46,7 @@ class outcomeController{
                 plans.budgets.push(budget[0])
                 
                 plans.save()
-                
+                console.log(plans,'plans');
                 res.status(201).json(plans)
             }
 
