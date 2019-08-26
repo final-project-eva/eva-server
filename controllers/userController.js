@@ -9,6 +9,7 @@ class UserController {
         User.create({
             firstname: req.body.firstname,
             lastname: req.body.lastname,
+            username: req.body.username,
             email: req.body.email,
             phone_number: req.body.phone_number,
             password: req.body.password
