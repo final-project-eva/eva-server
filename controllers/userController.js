@@ -9,6 +9,7 @@ class UserController {
         User.create({
             firstname: req.body.firstname,
             lastname: req.body.lastname,
+            username: req.body.username,
             email: req.body.email,
             phone_number: req.body.phone_number,
             password: req.body.password
@@ -54,12 +55,24 @@ class UserController {
         User.findById(req.decoded.id)
         .then(user => {
 
-            if(user.email === req.body.email){
+            if(user.email === req.body.email && user.username === req.body.username){
                 const { firstname, lastname, phone_number }= req.body
 
                 return User.findByIdAndUpdate(req.decoded.id, 
                         {firstname: firstname, lastname: lastname, phone_number: phone_number }, { runValidators: true, new: true })
-            }else{
+            }else if(user.email === req.body.email && user.username !== req.body.username){
+                const { firstname, lastname, phone_number, username }= req.body
+
+                return User.findByIdAndUpdate(req.decoded.id, 
+                        {firstname: firstname, lastname: lastname, phone_number: phone_number, username: username }, { runValidators: true, new: true })
+            }
+            else if(user.email !== req.body.email && user.username === req.body.username){
+                const { firstname, lastname, phone_number, email }= req.body
+
+                return User.findByIdAndUpdate(req.decoded.id, 
+                        {firstname: firstname, lastname: lastname, phone_number: phone_number, email: email }, { runValidators: true, new: true })
+            }
+            else{
                 
                 return User.findByIdAndUpdate(req.decoded.id, 
                     { ...req.body }, { runValidators: true, new: true })
