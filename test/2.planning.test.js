@@ -177,4 +177,20 @@ describe('Test Model Planning', () => {
         })
     })
 
+    describe('Delete Planning failed', () => {
+        it('should send object with status code 500', (done) => {
+
+            chai.request(app).delete(`/plan/qwerty`)
+            .then((res) => {
+                expect(res).to.have.status(500)
+                expect(res.body).to.be.an('object')
+                expect(res.body).to.have.property('message')
+                done()
+            })
+            .catch(function(err){
+                console.log(err)  
+            })
+        })
+    })
+
 })

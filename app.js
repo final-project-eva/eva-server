@@ -9,10 +9,13 @@ const route = require('./routes')
 const mongoose = require('mongoose')
 const errorHandler = require('./middlewares/errorHandler')
 
-mongoose.connect(`mongodb://localhost/eva`, {useNewUrlParser: true}, function(err){
-    if(err) throw err
-    else console.log('success connect to database')
-});
+mongoose.connect(`mongodb+srv://anameilani:ana1106131176@cluster0-ogdd6.gcp.mongodb.net/eva-financial-planning?retryWrites=true&w=majority`, {useNewUrlParser: true, useFindAndModify:false})
+.then(()=>{
+    console.log('success connect to database')
+})
+.catch(err => {
+    console.log('failed to connect',err);
+})
 
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
