@@ -9,6 +9,9 @@ let planningSchema= new Schema({
         ref: 'User',
         required: [true, 'userId required']
     },
+    username: {
+        type: String
+    },
     income: {
         type: Number,
         min : [0, 'Income not valid input amount']
