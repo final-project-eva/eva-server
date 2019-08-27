@@ -23,33 +23,31 @@ class UserController {
     static login(req, res, next) {
         console.log(req.body);
 
-        User.findOne({ email: req.body.email }, function (err, user) {
-            if (err) {
-                throw err
-            } else {
-                if (user) {
-                    if (bcrypt.compareSync(req.body.password, user.password)) {
-                        let obj = {
-                            id: user._id,
-                            email: user.email
-                        }
-                        res.json({ 
-                            userId: user._id,
-                            token: jwt.sign(obj)
-                         })
-
-                    } else {
-                        res.status(400).json({
-                            message: "wrong password"
-                        })
+        User.findOne({ email: req.body.email })
+        .then(user => {
+            if (user) {
+                if (bcrypt.compareSync(req.body.password, user.password)) {
+                    let obj = {
+                        id: user._id,
+                        email: user.email
                     }
+                    res.json({ 
+                        userId: user._id,
+                        token: jwt.sign(obj)
+                     })
+
                 } else {
                     res.status(400).json({
-                        message: "username wrong"
+                        message: "wrong password"
                     })
                 }
+            } else {
+                res.status(400).json({
+                    message: "username wrong"
+                })
             }
         })
+         .catch(next)
     }
 
     static updateProfile(req,res,next){
@@ -57,12 +55,24 @@ class UserController {
         User.findById(req.decoded.id)
         .then(user => {
 
-            if(user.email === req.body.email){
+            if(user.email === req.body.email && user.username === req.body.username){
                 const { firstname, lastname, phone_number }= req.body
 
                 return User.findByIdAndUpdate(req.decoded.id, 
                         {firstname: firstname, lastname: lastname, phone_number: phone_number }, { runValidators: true, new: true })
-            }else{
+            }else if(user.email === req.body.email && user.username !== req.body.username){
+                const { firstname, lastname, phone_number, username }= req.body
+
+                return User.findByIdAndUpdate(req.decoded.id, 
+                        {firstname: firstname, lastname: lastname, phone_number: phone_number, username: username }, { runValidators: true, new: true })
+            }
+            else if(user.email !== req.body.email && user.username === req.body.username){
+                const { firstname, lastname, phone_number, email }= req.body
+
+                return User.findByIdAndUpdate(req.decoded.id, 
+                        {firstname: firstname, lastname: lastname, phone_number: phone_number, email: email }, { runValidators: true, new: true })
+            }
+            else{
                 
                 return User.findByIdAndUpdate(req.decoded.id, 
                     { ...req.body }, { runValidators: true, new: true })
