@@ -123,12 +123,21 @@ class outcomeController{
         .catch(next)
     }
 
-    static remove(req, res, next){
-        Outcome.findByIdAndDelete(req.params.id)
-        .then(outcome => {
-            res.status(200).json(outcome)
-        })
-        .catch(next)
+    static async remove(req, res, next){
+        try {
+            let outcome= await Outcome.findById(req.params.id)
+            let plan= await Planning.findById(req.params.planningId)
+
+            plan.balance= plan.balance+ Number(outcome.amount)
+
+            let newPlan= await plan.save()
+            let deletedData= await Outcome.findByIdAndDelete(req.params.id)
+
+            res.status(200).json(deletedData)
+            
+        } catch (error) {
+            next()
+        }
     }
 }
 

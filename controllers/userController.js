@@ -84,6 +84,14 @@ class UserController {
         .catch(next)
     }
 
+    static checkUser(req,res,next){
+        User.find({username: req.params.username})
+        .then(user => {
+            res.status(200).json(user)
+        })
+        .catch(next)
+    }
+
 
 
 }
