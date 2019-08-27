@@ -125,13 +125,36 @@ class outcomeController{
         .catch(next)
     }
 
-    static remove(req, res, next){
+    static async remove(req, res, next){
+        try {
+            let plan= await Planning.findById(req.params.planningId)
+            let outcome= await Outcome.findById(req.params.id)
+            
+            let budget= plan.budgets.filter(item => {
+                return item.category.toLowerCase().includes(outcome.category.toLowerCase())
+            })
+            let indexBudget= plan.budgets.indexOf(budget[0])
+            let currentBudget= Number(budget[0].amount) + Number(outcome.amount)
+            budget[0].amount= currentBudget
+            
+            plan.budgets.splice(indexBudget, 1)
+            plan.budgets.push(budget[0])    
+            plan.save()
 
-        Outcome.findByIdAndDelete(req.params.id)
-        .then(deletedData => {
+            let updatePlan= await  Planning.findByIdAndUpdate(req.params.planningId , {$pull : { outcome: req.params.id }})
+            let deletedData= await Outcome.findByIdAndDelete(req.params.id)
+            
             res.status(200).json(deletedData)
-        })
-        .catch(next)
+
+        } catch (error) {
+            next()
+        }
+
+        // Outcome.findByIdAndDelete(req.params.id)
+        // .then(deletedData => {
+        //     res.status(200).json(deletedData)
+        // })
+        // .catch(next)
     }
 }
 

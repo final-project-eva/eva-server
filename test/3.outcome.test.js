@@ -297,10 +297,25 @@ describe('Outcome test', () => {
     describe('Delete one outcome', () => {
         it('should send object with status code 200', (done) => {
           
-            chai.request(app).delete(`/outcome/${outcomeId}`)
+            chai.request(app).delete(`/outcome/${outcomeId}/${planningId}`)
             .then((res) => {
 
                 expect(res).to.have.status(200)
+                done()
+            })
+            .catch(function(err){
+                console.log(err)  
+            })
+        })
+    })
+
+    describe('Delete one outcome failed', () => {
+        it('should send object with status code 404', (done) => {
+          
+            chai.request(app).delete(`/outcome/${outcomeId}/a12345`)
+            .then((res) => {
+
+                expect(res).to.have.status(404)
                 done()
             })
             .catch(function(err){
