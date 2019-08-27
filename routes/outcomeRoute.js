@@ -3,7 +3,7 @@ const outcomeController= require('../controllers/outcomeController')
 
 router.get('/:id', outcomeController.findOne)
 router.post('/', outcomeController.create)
-router.post('/alexa', outcomeController.createAlexa)
+router.post('/input/alexa', outcomeController.createAlexa)
 router.patch('/:id', outcomeController.update)
 router.delete('/:id', outcomeController.remove)
 
