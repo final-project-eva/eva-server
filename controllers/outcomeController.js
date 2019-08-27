@@ -5,11 +5,9 @@ class outcomeController{
 
     static async create(req,res,next){
         try {
-            let plans=  Planning.find({username: req.body.username}).sort({createdAt: -1})
-            let planningId= plans[0]._id
-            
+           
             let outcome={
-                planningId: planningId,
+                planningId: req.body.planningId,
                 category: req.body.category,
                 date: req.body.date,
                 note: req.body.note,
@@ -54,7 +52,7 @@ class outcomeController{
     }
 
     static async createAlexa(req, res, next){
-
+        console.log(req.body)
         try {
             let plans=  Planning.find({username: req.body.username}).sort({createdAt: -1})
             let planningId= plans[0]._id
@@ -94,7 +92,7 @@ class outcomeController{
                 plans.budgets.push(budget[0])
                 
                 let newPlans= await plans.save()
-                
+                console.log(newPlans, 'new plans')
                 res.status(201).json(newPlans)
             }
 
