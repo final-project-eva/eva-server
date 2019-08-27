@@ -9,6 +9,7 @@ const expect = chai.expect;
 
 let idToken =''
 let idToken2 =''
+let username =''
 
 after(function(done){
     deleteAllUser('user',done)
@@ -206,7 +207,7 @@ describe('Test users', function(){
 
 
     describe('update profile', function(){
-        it('should be an object with 200 status code', function(done){
+        it('should be an object with 200 status code(same email and username)', function(done){
             const data = {email:'viuty@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username:"viuty"}
             chai.request(app).put('/users')
             .set('token',idToken)
@@ -261,6 +262,46 @@ describe('Test users', function(){
                 console.log(err);  
             })
         })
+
+        it('should be an object with 200 status code(change username)', function(done){
+            const data = {email:'vsuzy@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: 'viutytiadita'}
+            chai.request(app).put('/users')
+            .set('token',idToken)
+            .send(data)
+            .then(function(res){
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.an('object')
+                expect(res.body).to.have.property('email')
+                expect(res.body).to.have.property('password')
+                expect(res.body).to.have.property('firstname')
+                expect(res.body).to.have.property('lastname')
+                expect(res.body).to.have.property('phone_number')
+                done()
+            })
+            .catch(function(err){
+                console.log(err);  
+            })
+        })
+
+        it('should be an object with 200 status code(change both)', function(done){
+            const data = {email:'vsuzy1206@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: 'tiaditaviuty'}
+            chai.request(app).put('/users')
+            .set('token',idToken)
+            .send(data)
+            .then(function(res){
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.an('object')
+                expect(res.body).to.have.property('email')
+                expect(res.body).to.have.property('password')
+                expect(res.body).to.have.property('firstname')
+                expect(res.body).to.have.property('lastname')
+                expect(res.body).to.have.property('phone_number')
+                done()
+            })
+            .catch(function(err){
+                console.log(err);  
+            })
+        })
     })
 
 
@@ -277,6 +318,7 @@ describe('Test users', function(){
                 expect(res.body).to.have.property('firstname')
                 expect(res.body).to.have.property('lastname')
                 expect(res.body).to.have.property('username')
+                username = res.body.username
                 expect(res.body).to.have.property('phone_number')
                 done()
             })
@@ -314,6 +356,19 @@ describe('Test users', function(){
         })
     })
     
-    
+    describe('check user', function(){
+        it('should be an object with 200 status code', function(done){
+            chai.request(app).get(`/users/${username}`)
+            .then(function(res){
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.an('array')
+                done()
+            })
+            .catch(function(err){
+                console.log(err);
+            })
+        })
+        
+    })
     
 })

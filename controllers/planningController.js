@@ -19,7 +19,6 @@ class planningController{
 
         Planning.create(newPlanning)
         .then(plan => {
-            console.log(plan, '+++++++++++++++++++')
             res.status(201).json(plan)
         })
         .catch(next)
@@ -32,8 +31,6 @@ class planningController{
         .populate('outcome')
         .sort({createdAt: -1})
         .then(plans => {
-            console.log(plans[0]);
-            
             res.status(200).json(plans)
         })
         .catch(next)
@@ -49,9 +46,12 @@ class planningController{
     }
 
     static update(req, res, next){
+        console.log(req.body,'body');
         
         Planning.findByIdAndUpdate(req.params.id, {...req.body},{new: true})
         .then(plan =>{
+            console.log(plan,'ini hasil edit');
+            
             res.status(200).json(plan)
         })
         .catch(next)
