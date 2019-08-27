@@ -4,6 +4,7 @@ const Planning= require('../models/planning')
 class outcomeController{
 
     static async create(req,res,next){
+        
         try {
             let plans=  Planning.find({username: req.body.username}).sort({createdAt: -1})
             let planningId= plans[0]._id
@@ -17,24 +18,27 @@ class outcomeController{
             }
             let plans= await Planning.findById(req.body.planningId)
                 
+                
             if(Object.keys(plans).length !== 0 ){
                 
                 let newOutcome= await Outcome.create(outcome)
+                console.log(newOutcome,'newco');
+                
                 let budget= plans.budgets.filter(item => {
                         return item.category.toLowerCase().includes(req.body.category.toLowerCase())
                     })
                 let indexBudget= plans.budgets.indexOf(budget[0])
-            
+                console.log(newOutcome)
                 plans.outcome.push(newOutcome._id)
-
-                let newBalance= plans.balance - Number(req.body.amount)
-                let currentBudget= budget[0].amount - Number(req.body.amount)
+                let newBalance= Number(plans.balance) - Number(req.body.amount)
+                let currentBudget= Number(budget[0].amount) - Number(req.body.amount)
 
                 if(currentBudget > 0){
+                    
                     budget[0].amount= currentBudget
                     plans.balance= newBalance
                 }else{
-                    plans.overBudget=  Number(req.body.amount) - budget[0].amount
+                    plans.overBudget=  Number(req.body.amount) - Number(budget[0].amount)
                     budget[0].amount= 0
                     plans.outcomeOverBudget.push(newOutcome._id)
                     plans.balance= newBalance
@@ -42,9 +46,9 @@ class outcomeController{
                 plans.budgets.splice(indexBudget, 1)
                 plans.budgets.push(budget[0])
                 
-                let newPlans= await plans.save()
-                
-                res.status(201).json(newPlans)
+                plans.save()
+                console.log(plans,'plans');
+                res.status(201).json(plans)
             }
 
         } catch (error) {

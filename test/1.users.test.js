@@ -17,7 +17,7 @@ after(function(done){
 describe('Test users', function(){
     describe('post register', function(){
         it('should be an object with 201 status code',function(done){
-            const data = {email:'viuty@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777"}
+            const data = {email:'viuty@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita', username: "viuty",phone_number: "081973468777"}
             chai.request(app).post('/users/register')
             .send(data)
             .then(function(res){
@@ -27,6 +27,7 @@ describe('Test users', function(){
                 expect(res.body).to.have.property('password')
                 expect(res.body).to.have.property('firstname')
                 expect(res.body).to.have.property('lastname')
+                expect(res.body).to.have.property('username')
                 expect(res.body).to.have.property('phone_number')
                 done()
             })
@@ -35,7 +36,22 @@ describe('Test users', function(){
             })
         })
         it('should be an object with 400 status code(email has been used)',function(done){
-            const data = {email:'tviuty@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777"}
+            const data = {email:'tviuty@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: "tviuty"}
+            chai.request(app).post('/users/register')
+            .send(data)
+            .then(function(res){
+                expect(res).to.have.status(400)
+                expect(res.body).to.be.an('object')
+                expect(res.body).to.have.property('message')
+                done()
+            })
+            .catch(function(err){
+                console.log(err);  
+            })
+        })
+
+        it('should be an object with 400 status code(username has been used)',function(done){
+            const data = {email:'uviuty@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: "tviuty"}
             chai.request(app).post('/users/register')
             .send(data)
             .then(function(res){
@@ -50,7 +66,7 @@ describe('Test users', function(){
         })
         
         it('should be an object with 400 status code(is not a valid email)',function(done){
-            const data = {email:'tviuty.yahoo', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777" }
+            const data = {email:'tviuty.yahoo', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: "uviuty" }
             chai.request(app).post('/users/register')
             .send(data)
             .then(function(res){
@@ -64,7 +80,7 @@ describe('Test users', function(){
             })
         })
         it('should be an object with 400 status code(length too short)',function(done){
-            const data = {email:'tviuty@yahoo.com', password: '123', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777"}
+            const data = {email:'tviuty@yahoo.com', password: '123', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: "yviuty"}
             chai.request(app).post('/users/register')
             .send(data)
             .then(function(res){
@@ -141,19 +157,7 @@ describe('Test users', function(){
                 console.log(err);
             })
         })
-        it('should be an object with 400 status code(err callback)',function(done){
-            const data = {ema:'tviuty@yahoo.com'}
-            chai.request(app).post('/users/login')
-            .then(function(res){
-                expect(res).to.have.status(400)
-                expect(res.body).to.be.an('object')
-                expect(res.body).to.have.property('message')
-                done()
-            })
-            .catch(function(err){
-                console.log(err);
-            })
-        })
+      
         it('should be an object with 400 status code(is not valid email)',function(done){
             const data = {email:'tviuty@ya', password: '123456'}
             chai.request(app).post('/users/login')
@@ -203,7 +207,7 @@ describe('Test users', function(){
 
     describe('update profile', function(){
         it('should be an object with 200 status code', function(done){
-            const data = {email:'viuty@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777"}
+            const data = {email:'viuty@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username:"viuty"}
             chai.request(app).put('/users')
             .set('token',idToken)
             .send(data)
@@ -222,21 +226,7 @@ describe('Test users', function(){
             })
         })
         
-        // it('should be an object with 400 status code(empty body)',function(done){
-        //     const data = {}
-        //     chai.request(app).put('/users')
-        //     .set('token',idToken)
-        //     .send(data)
-        //     .then(function(res){
-        //         expect(res).to.have.status(400)
-        //         expect(res.body).to.be.an('object')
-        //         expect(res.body).to.have.property('message')
-        //         done()
-        //     })
-        //     .catch(function(err){
-        //         console.log(err);
-        //     })
-        // })
+     
         it('should be an object with 401 status code(without token)', function(done){
             const data = {email:'aaa@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777"}
             chai.request(app).put('/users')
@@ -253,7 +243,7 @@ describe('Test users', function(){
         })
 
         it('should be an object with 200 status code(change email)', function(done){
-            const data = {email:'vsuzy@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777"}
+            const data = {email:'vsuzy@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: 'viuty'}
             chai.request(app).put('/users')
             .set('token',idToken)
             .send(data)
@@ -286,6 +276,7 @@ describe('Test users', function(){
                 expect(res.body).to.have.property('password')
                 expect(res.body).to.have.property('firstname')
                 expect(res.body).to.have.property('lastname')
+                expect(res.body).to.have.property('username')
                 expect(res.body).to.have.property('phone_number')
                 done()
             })

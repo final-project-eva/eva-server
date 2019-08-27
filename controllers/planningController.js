@@ -4,6 +4,7 @@ const Outcome= require('../models/outcome')
 class planningController{
 
     static create(req, res, next){
+    console.log(req.body);
 
         let newPlanning= {
             userId: req.body.userId,
@@ -24,11 +25,14 @@ class planningController{
     }
 
     static findAll(req, res, next){
+        console.log(req.params);
 
         Planning.find({userId: req.params.userId})
-        .populate('outcome.outcomeId')
+        .populate('outcome')
         .sort({createdAt: -1})
         .then(plans => {
+            console.log(plans[0]);
+            
             res.status(200).json(plans)
         })
         .catch(next)
