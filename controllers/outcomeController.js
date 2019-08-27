@@ -45,7 +45,7 @@ class outcomeController{
                 plans.budgets.push(budget[0])
                 
                 plans.save()
-                console.log(plans,'plans');
+               
                 res.status(201).json(plans)
             }
 
@@ -57,10 +57,9 @@ class outcomeController{
 
     static async createAlexa(req, res, next){
         try {
-
             let plan=  await Planning.find({ username: req.body.username }).sort({ createdAt: -1 })
             let planningId= plan[0]._id
-
+            
             let outcome={
                 planningId: planningId,
                 category: req.body.category,
@@ -69,21 +68,20 @@ class outcomeController{
                 amount: req.body.amount
             }
             let plans= await Planning.findById(planningId)
-
-                
+            
+            
             if(Object.keys(plans).length !== 0 ){
                 
                 let newOutcome= await Outcome.create(outcome)
                 let budget= plans.budgets.filter(item => {
-                        return item.category.toLowerCase().includes(req.body.category.toLowerCase())
-                    })
+                    return item.category.toLowerCase().includes(req.body.category.toLowerCase())
+                })
                 let indexBudget= plans.budgets.indexOf(budget[0])
-            
+                
                 plans.outcome.push(newOutcome._id)
-
+                
                 let newBalance= plans.balance - Number(req.body.amount)
                 let currentBudget= budget[0].amount - Number(req.body.amount)
-
                 if(currentBudget > 0){
                     budget[0].amount= currentBudget
                     plans.balance= newBalance
@@ -96,10 +94,9 @@ class outcomeController{
                 plans.budgets.splice(indexBudget, 1)
                 plans.budgets.push(budget[0])
                 
-                let newPlans= await plans.save()
-                
-                console.log(newPlans, 'new plans')
-                res.status(201).json(newPlans)
+                plans.save()
+                                
+                res.status(201).json(plans)
             }
 
         } catch (error) {
@@ -127,21 +124,13 @@ class outcomeController{
         .catch(next)
     }
 
-    static async remove(req, res, next){
-        try {
-            let outcome= await Outcome.findById(req.params.id)
-            let plan= await Planning.findById(req.params.planningId)
+    static remove(req, res, next){
 
-            plan.balance= plan.balance+ Number(outcome.amount)
-
-            let newPlan= await plan.save()
-            let deletedData= await Outcome.findByIdAndDelete(req.params.id)
-
+        Outcome.findByIdAndDelete(req.params.id)
+        .then(deletedData => {
             res.status(200).json(deletedData)
-            
-        } catch (error) {
-            next()
-        }
+        })
+        .catch(next)
     }
 }
 

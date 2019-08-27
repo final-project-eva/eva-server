@@ -19,6 +19,7 @@ class planningController{
 
         Planning.create(newPlanning)
         .then(plan => {
+            console.log(plan, '+++++++++++++++++++')
             res.status(201).json(plan)
         })
         .catch(next)
