@@ -5,6 +5,7 @@ const authentication = require('../middlewares/authentication')
 
 userRouter.post('/register',UserController.register)
 userRouter.post('/login',UserController.login)
+userRouter.get('/:username', UserController.checkUser)
 userRouter.use(authentication)
 userRouter.get('/', UserController.fetchUser)
 userRouter.put('/', UserController.updateProfile)
