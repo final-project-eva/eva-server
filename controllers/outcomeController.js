@@ -57,11 +57,11 @@ class outcomeController{
     }
 
     static async createAlexa(req, res, next){
-        console.log(req.body)
         try {
-            let plans=  Planning.find({username: req.body.username}).sort({createdAt: -1})
-            let planningId= plans[0]._id
-            
+
+            let plan=  await Planning.find({ username: req.body.username }).sort({ createdAt: -1 })
+            let planningId= plan[0]._id
+
             let outcome={
                 planningId: planningId,
                 category: req.body.category,
@@ -69,7 +69,8 @@ class outcomeController{
                 note: req.body.note,
                 amount: req.body.amount
             }
-            let plans= await Planning.findById(req.body.planningId)
+            let plans= await Planning.findById(planningId)
+
                 
             if(Object.keys(plans).length !== 0 ){
                 
@@ -97,6 +98,7 @@ class outcomeController{
                 plans.budgets.push(budget[0])
                 
                 let newPlans= await plans.save()
+                
                 console.log(newPlans, 'new plans')
                 res.status(201).json(newPlans)
             }
@@ -105,9 +107,6 @@ class outcomeController{
             next()
         }
        
-
-
-
     }
 
     static findOne(req, res, next){
@@ -129,12 +128,21 @@ class outcomeController{
         .catch(next)
     }
 
-    static remove(req, res, next){
-        Outcome.findByIdAndDelete(req.params.id)
-        .then(outcome => {
-            res.status(200).json(outcome)
-        })
-        .catch(next)
+    static async remove(req, res, next){
+        try {
+            let outcome= await Outcome.findById(req.params.id)
+            let plan= await Planning.findById(req.params.planningId)
+
+            plan.balance= plan.balance+ Number(outcome.amount)
+
+            let newPlan= await plan.save()
+            let deletedData= await Outcome.findByIdAndDelete(req.params.id)
+
+            res.status(200).json(deletedData)
+            
+        } catch (error) {
+            next()
+        }
     }
 }
 
