@@ -26,7 +26,6 @@ class outcomeController{
                         return item.category.toLowerCase().includes(req.body.category.toLowerCase())
                     })
                 let indexBudget= plans.budgets.indexOf(budget[0])
-                console.log(newOutcome)
                 plans.outcome.push(newOutcome._id)
                 let newBalance= Number(plans.balance) - Number(req.body.amount)
                 let currentBudget= Number(budget[0].amount) - Number(req.body.amount)
@@ -36,6 +35,8 @@ class outcomeController{
                     budget[0].amount= currentBudget
                     plans.balance= newBalance
                 }else{
+                    console.log('msk else');
+                    
                     plans.overBudget=  Number(req.body.amount) - Number(budget[0].amount)
                     budget[0].amount= 0
                     plans.outcomeOverBudget.push(newOutcome._id)
