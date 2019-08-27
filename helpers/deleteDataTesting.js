@@ -7,8 +7,8 @@ let objectModel = {
 module.exports = function (modelName, done) {
     if (process.env.NODE_ENV === 'test') {
         return objectModel[modelName].deleteMany({
-            _id: {
-                $nin : ['5d62298b15293d1144a7e72e']
+            email: {
+                $nin : ['tviuty@yahoo.com']
             }
         })
             .then(() => {

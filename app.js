@@ -33,3 +33,4 @@ module.exports = app
 
 
 //mongodb+srv://anameilani:ana1106131176@cluster0-ogdd6.gcp.mongodb.net/eva-financial-planning?retryWrites=true&w=majority
+//mongodb://localhost/eva

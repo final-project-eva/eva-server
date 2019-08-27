@@ -9,6 +9,7 @@ chai.use(chaiHttp)
 const expect = chai.expect
 
 let userId= null
+let username= null
 let planningId= null
 
 after(function(done){
@@ -17,9 +18,10 @@ after(function(done){
 
 before(function(done){
     let data={
-        firstname: 'ana',
+        firstname: 'aaa',
         lastname: 'mei',
-        email: 'ana@mail.com',
+        email: 'aaa@mail.com',
+        username: 'aaa',
         phone_number: "081122334455",
         password: 'ana123'
     }
@@ -27,6 +29,7 @@ before(function(done){
     User.create(data)
     .then(user =>{
         userId= user._id
+        username= user.username
         done()
     })
     .catch(error => {
@@ -42,6 +45,7 @@ describe('Test Model Planning', () => {
         it('should be an object with 201 status code', (done) => {
             const data={
                 userId: userId,
+                username: username,
                 income: 1000000,
                 budgets:  [{
                     "category": "food and beverages",
@@ -64,6 +68,7 @@ describe('Test Model Planning', () => {
                 expect(res).to.have.status(201)
                 expect(res.body).to.be.an('object')
                 expect(res.body).to.have.property('userId')
+                expect(res.body).to.have.property('username')
                 expect(res.body).to.have.property('income')
                 expect(res.body).to.have.property('budgets')
                 expect(res.body).to.have.property('outcome')
@@ -162,7 +167,7 @@ describe('Test Model Planning', () => {
     })
 
     describe('Delete Planning failed', () => {
-        it('should send object with status code 200', (done) => {
+        it('should send object with status code 404', (done) => {
 
             chai.request(app).delete(`/plan/5d5fc80d8d08ef536ca939ca`)
             .then((res) => {
