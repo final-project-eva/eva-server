@@ -1,7 +1,7 @@
 const generateResponse = require('../helpers/generateResponse')
 
 module.exports = function (err, req, res, next) {
-    // console.log(err);
+    console.log(err);
     
     if(err.name == 'ValidationError'){
         res.status(400).json({
