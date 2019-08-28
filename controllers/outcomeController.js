@@ -16,12 +16,10 @@ class outcomeController{
             }
             let plans= await Planning.findById(req.body.planningId)
                 
-                
+
             if(Object.keys(plans).length !== 0 ){
                 
-                let newOutcome= await Outcome.create(outcome)
-                console.log(newOutcome,'newco');
-                
+                let newOutcome= await Outcome.create(outcome)                              
                 let budget= plans.budgets.filter(item => {
                         return item.category.toLowerCase().includes(req.body.category.toLowerCase())
                     })
@@ -35,16 +33,13 @@ class outcomeController{
                     budget[0].amount= currentBudget
                     plans.balance= newBalance
                 }else{
-                    console.log('msk else');
-                    
-                    plans.overBudget=  Number(req.body.amount) - Number(budget[0].amount)
+
+                    plans.overBudget= plans.overBudget + (Number(req.body.amount) - Number(budget[0].amount))
                     budget[0].amount= 0
                     plans.outcomeOverBudget.push(newOutcome._id)
                     plans.balance= newBalance
                 }
-                plans.budgets.splice(indexBudget, 1)
-                plans.budgets.push(budget[0])
-                
+                plans.budgets.splice(indexBudget, 1, budget[0])               
                 plans.save()
                
                 res.status(201).json(plans)
@@ -87,14 +82,12 @@ class outcomeController{
                     budget[0].amount= currentBudget
                     plans.balance= newBalance
                 }else{
-                    plans.overBudget=  Number(req.body.amount) - budget[0].amount
+                    plans.overBudget= plans.overBudget + (Number(req.body.amount) - Number(budget[0].amount))
                     budget[0].amount= 0
                     plans.outcomeOverBudget.push(newOutcome._id)
                     plans.balance= newBalance
                 }
-                plans.budgets.splice(indexBudget, 1)
-                plans.budgets.push(budget[0])
-                
+                plans.budgets.splice(indexBudget, 1, budget[0])               
                 plans.save()
                                 
                 res.status(201).json(plans)
@@ -137,8 +130,7 @@ class outcomeController{
             let currentBudget= Number(budget[0].amount) + Number(outcome.amount)
             budget[0].amount= currentBudget
             
-            plan.budgets.splice(indexBudget, 1)
-            plan.budgets.push(budget[0])    
+            plan.budgets.splice(indexBudget, 1, budget[0])   
             plan.save()
 
             let updatePlan= await  Planning.findByIdAndUpdate(req.params.planningId , {$pull : { outcome: req.params.id }})

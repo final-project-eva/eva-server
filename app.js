@@ -10,7 +10,7 @@ const mongoose = require('mongoose')
 const errorHandler = require('./middlewares/errorHandler')
 
 
-mongoose.connect(`mongodb+srv://anameilani:ana1106131176@cluster0-ogdd6.gcp.mongodb.net/eva-financial-planning?retryWrites=true&w=majority`, {useNewUrlParser: true, useFindAndModify:false})
+mongoose.connect(`mongodb://localhost/eva`, {useNewUrlParser: true, useFindAndModify:false})
 .then(()=>{
     console.log('success connect to database')
 })
