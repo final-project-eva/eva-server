@@ -13,6 +13,7 @@ const expect = chai.expect
 let planningId= null
 let username= null
 let outcomeId= null
+let overId= null
 
 after(function(done){
     deleteAllUser('outcome',done)
@@ -81,7 +82,7 @@ describe('Outcome test', () => {
             .send(data)
             .then((res) => {
                
-                
+                outcomeId= res.body.outcome[0]
 
                 expect(res).to.have.status(201)
                 expect(res.body).to.be.an('object')
@@ -108,14 +109,14 @@ describe('Outcome test', () => {
                 category: 'transportation',
                 date: new Date(),
                 note: 'beli motor',
-                amount: 3500
+                amount: 5000
             }
 
             chai.request(app).post('/outcome')
             .send(data)
             .then((res) => {
-                
-                outcomeId= res.body.outcome[0]
+                console.log(res.body.outcomeOverBudget, '======over budget')
+                overId= res.body.outcomeOverBudget[0]
 
                 expect(res).to.have.status(201)
                 expect(res.body).to.be.an('object')
@@ -275,7 +276,7 @@ describe('Outcome test', () => {
             chai.request(app).patch(`/outcome/${outcomeId}`)
             .send(data)
             .then((res) => {
-
+ 
                 expect(res).to.have.status(200)
                 expect(res.body).to.be.an('object')
                 expect(res.body).to.have.property('planningId')
@@ -294,10 +295,25 @@ describe('Outcome test', () => {
         })
     })
 
-    describe('Delete one outcome', () => {
+    describe('Delete one outcome not overbudget', () => {
+        it('should send object with status code 200', (done) => {
+            
+            chai.request(app).delete(`/outcome/${outcomeId}/${planningId}`)
+            .then((res) => {
+
+                expect(res).to.have.status(200)
+                done()
+            })
+            .catch(function(err){
+                console.log(err)  
+            })
+        })
+    })
+
+    describe('Delete one outcome overbudget', () => {
         it('should send object with status code 200', (done) => {
           
-            chai.request(app).delete(`/outcome/${outcomeId}/${planningId}`)
+            chai.request(app).delete(`/outcome/${overId}/${planningId}`)
             .then((res) => {
 
                 expect(res).to.have.status(200)
