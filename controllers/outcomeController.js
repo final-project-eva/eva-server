@@ -131,9 +131,16 @@ class outcomeController{
             budget[0].amount= currentBudget
             
             plan.budgets.splice(indexBudget, 1, budget[0])   
-            plan.save()
+            await plan.save()
 
-            let updatePlan= await  Planning.findByIdAndUpdate(req.params.planningId , {$pull : { outcome: req.params.id }})
+            if(plan.outcomeOverBudget.indexOf(outcome._id) !== -1){
+                
+                let updatePlan= await Planning.findByIdAndUpdate(req.params.planningId , {$pull : { outcome: req.params.id, outcomeOverBudget: req.params.id }})
+            }else{
+                let updatedPlans = await Planning.findByIdAndUpdate(req.params.planningId , {$pull : { outcome: req.params.id }})
+
+            }
+            
             let deletedData= await Outcome.findByIdAndDelete(req.params.id)
             
             res.status(200).json(deletedData)
