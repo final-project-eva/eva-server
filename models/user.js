@@ -29,8 +29,7 @@ const userSchema = new Schema({
                     .catch(err => {
                         throw err
                     });
-            },
-            message: props => `This username ${props.value} already used!`
+            }
         }]
     },
     email:{

@@ -9,6 +9,7 @@ const expect = chai.expect;
 
 let idToken =''
 let idToken2 =''
+let idToken3 =''
 let username =''
 
 after(function(done){
@@ -37,7 +38,7 @@ describe('Test users', function(){
             })
         })
         it('should be an object with 400 status code(email has been used)',function(done){
-            const data = {email:'tviuty@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: "tviuty"}
+            const data = {email:'viuty@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: "tviuty"}
             chai.request(app).post('/users/register')
             .send(data)
             .then(function(res){
@@ -243,8 +244,8 @@ describe('Test users', function(){
             })
         })
 
-        it('should be an object with 200 status code(change email)', function(done){
-            const data = {email:'vsuzy@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: 'viuty'}
+        it('should be an object with 200 status code(change username)', function(done){
+            const data = {email:'viuty@yahoo.com',password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: 'viutytiadita'}
             chai.request(app).put('/users')
             .set('token',idToken)
             .send(data)
@@ -262,8 +263,8 @@ describe('Test users', function(){
                 console.log(err);  
             })
         })
-
-        it('should be an object with 200 status code(change username)', function(done){
+        
+        it('should be an object with 200 status code(change email)', function(done){
             const data = {email:'vsuzy@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: 'viutytiadita'}
             chai.request(app).put('/users')
             .set('token',idToken)
@@ -283,10 +284,45 @@ describe('Test users', function(){
             })
         })
 
+        it('should be an object with 401 status code(change email)', function(done){
+            const data = {email:'vsuzy@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777"}
+            chai.request(app).put('/users')
+            .set('token',idToken)
+            .send(data)
+            .then(function(res){
+                expect(res).to.have.status(401)
+                expect(res.body).to.be.an('object')
+                done()
+            })
+            .catch(function(err){
+                console.log(err);  
+            })
+        })
+
+    })
+
+    describe('update profile change both', function(done){
+        before(function(done){
+            chai.request(app).post('/users/login')
+            .send({email:'vsuzy@yahoo.com', password: '123456'})
+            .then(function(res){
+                expect(res).to.have.status(200)
+                expect(res.body).to.be.an('object')
+                expect(res.body).to.have.property('token')
+                idToken3 = res.body.token
+                console.log(idToken3);
+                // console.log(res.body.userId);
+            
+                done()
+            })
+            .catch(function(err){
+                console.log(err);
+            })
+        })
         it('should be an object with 200 status code(change both)', function(done){
             const data = {email:'vsuzy1206@yahoo.com', password: '123456', firstname: 'viuty', lastname: 'tiadita',phone_number: "081973468777", username: 'tiaditaviuty'}
             chai.request(app).put('/users')
-            .set('token',idToken)
+            .set('token',idToken3)
             .send(data)
             .then(function(res){
                 expect(res).to.have.status(200)
@@ -303,8 +339,6 @@ describe('Test users', function(){
             })
         })
     })
-
-
     describe('fetch user', function(){
         it('should be an object with 200 status code', function(done){
             chai.request(app).get('/users')
