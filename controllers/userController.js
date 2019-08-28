@@ -43,7 +43,7 @@ class UserController {
                 }
             } else {
                 res.status(400).json({
-                    message: "username wrong"
+                    message: "wrong email"
                 })
             }
         })
@@ -68,7 +68,7 @@ class UserController {
             }
             else if(user.email !== req.body.email && user.username === req.body.username){
                 const { firstname, lastname, phone_number, email }= req.body
-
+                
                 return User.findByIdAndUpdate(req.decoded.id, 
                         {firstname: firstname, lastname: lastname, phone_number: phone_number, email: email }, { runValidators: true, new: true })
             }
